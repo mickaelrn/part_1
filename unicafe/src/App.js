@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 const Title = (props) => {
   return (
     <>
@@ -14,30 +15,44 @@ const Button = (props) => {
   );
 };
 const Statistics = (props) => {
-  return(
-    <>
-      <Title text="Statistics" />
-      <p>good : {props.good}</p>
-      <p>neutral : {props.neutral}</p>
-      <p>bad : {props.bad}</p>
-    </>
-  )
-}
+  if (props.all === 0) {
+  } else {
+    return (
+      <>
+        <tr index={props.text + props.value}>
+          <td>{props.text}</td>
+          <td> </td>
+          <td>{props.value}</td>
+        </tr>
+      </>
+    );
+  }
+};
+const Empty = (props) => {
+  if (props.all === 0) {
+    return <p>No feedback given</p>;
+  } else {
+  }
+};
 const App = () => {
-  // enregistrer les clics de chaque bouton dans un état différent
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const [average, setAverage] = useState(0);
+  let all = good + bad + neutral;
 
   const setGoodValue = () => {
-    setGood(good + 1)
-  }
+    setGood(good + 1);
+    setAverage(average + 1);
+  };
   const setNeutralValue = () => {
-    setNeutral(neutral + 1)
-  }
+    setNeutral(neutral + 1);
+    setAverage(average + 0);
+  };
   const setBadValue = () => {
-    setBad(bad + 1)
-  }
+    setBad(bad + 1);
+    setAverage(average - 1);
+  };
 
   return (
     <div>
@@ -45,7 +60,18 @@ const App = () => {
       <Button text="good" handleClick={setGoodValue} />
       <Button text="neutral" handleClick={setNeutralValue} />
       <Button text="bad" handleClick={setBadValue} />
-      <Statistics good={good} neutral={neutral} bad={bad}/>
+      <Title text="Statistics" />
+      <Empty all={all}/>
+      <table>
+        <tbody>
+          <Statistics text="good" value={good} all={all} />
+          <Statistics text="neutral" value={neutral} all={all} />
+          <Statistics text="bad" value={bad} all={all} />
+          <Statistics text="all" value={good + neutral + bad} all={all} />
+          <Statistics text="average"value={average / all} all={all} />
+          <Statistics text="positive" value={(good * 100) / (all) + " %"} all={all} />
+        </tbody>
+      </table>
     </div>
   );
 };
